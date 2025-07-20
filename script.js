@@ -58,8 +58,12 @@ const drumSounds = {
 
 // Audio Context初期化関数
 function initAudioContext() {
-    if (!audioContext) {
+    if (!audioContext || audioContext.state === 'suspended') {
         audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        // サスペンド状態の場合は再開
+        if (audioContext.state === 'suspended') {
+            audioContext.resume();
+        }
     }
 }
 
@@ -188,11 +192,15 @@ function createKeyboardVisual() {
 
 // キーボードイベント処理
 document.addEventListener('keydown', (e) => {
+    // preventDefault でブラウザのデフォルト動作を防ぐ
+    e.preventDefault();
+    
     const key = e.key.toUpperCase();
+    const originalKey = e.key;
     
     // 既に押されているキーは無視
-    if (activeKeys.has(key)) return;
-    activeKeys.add(key);
+    if (activeKeys.has(originalKey)) return;
+    activeKeys.add(originalKey);
     
     // 数字キーで音色変更
     if (key >= '1' && key <= '9') {
@@ -201,8 +209,9 @@ document.addEventListener('keydown', (e) => {
         return;
     }
     
-    // ビジュアルフィードバック
-    const keyElement = document.getElementById(`key-${key}`);
+    // ビジュアルフィードバック（スペースキーの場合は元のキーを使用）
+    const visualKey = originalKey === ' ' ? ' ' : key;
+    const keyElement = document.getElementById(`key-${visualKey}`);
     if (keyElement) {
         keyElement.classList.add('active');
     }
@@ -210,18 +219,20 @@ document.addEventListener('keydown', (e) => {
     // 音を再生
     if (keyToNote[key]) {
         playNote(keyToNote[key], currentSoundType);
-    } else if (drumSounds[e.key]) {
-        const drum = drumSounds[e.key];
+    } else if (drumSounds[originalKey]) {
+        const drum = drumSounds[originalKey];
         playNote(drum.freq, drum.type, true);
     }
 });
 
 document.addEventListener('keyup', (e) => {
     const key = e.key.toUpperCase();
-    activeKeys.delete(key);
+    const originalKey = e.key;
+    activeKeys.delete(originalKey);
     
     // ビジュアルフィードバック解除
-    const keyElement = document.getElementById(`key-${key}`);
+    const visualKey = originalKey === ' ' ? ' ' : key;
+    const keyElement = document.getElementById(`key-${visualKey}`);
     if (keyElement) {
         keyElement.classList.remove('active');
     }
@@ -234,3 +245,14 @@ document.getElementById('volume').addEventListener('input', (e) => {
 
 // 初期化
 createKeyboardVisual();
+
+// 初回クリックでAudioContext起動
+document.addEventListener('click', () => {
+    initAudioContext();
+}, { once: true });
+
+// デバッグ用コンソール出力を追加
+window.addEventListener('load', () => {
+    console.log('キーボードピアノ: 読み込み完了');
+    console.log('キーを押して演奏してください');
+});
