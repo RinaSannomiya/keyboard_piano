@@ -1,7 +1,4 @@
 {
   "name": "keyboard-piano",
-  "version": 2,
-  "buildCommand": "echo 'No build required'",
-  "outputDirectory": ".",
-  "installCommand": "echo 'No install required'"
+  "version": 2
 }

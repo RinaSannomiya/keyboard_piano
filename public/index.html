@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>キーボードピアノ</title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>キーボードピアノ</h1>
+        <div class="instructions">
+            <p>キーボードを叩いて演奏しよう！</p>
+            <ul>
+                <li>アルファベットキー（A-Z）: 音階</li>
+                <li>数字キー（1-9）: 音色変更</li>
+                <li>0キー: 音階モード切り替え</li>
+                <li>スペースキー・下段キー: 打楽器</li>
+            </ul>
+            <p class="start-hint">※初回は画面をクリックしてから演奏開始してください</p>
+        </div>
+        <div class="sound-mode">
+            現在の音色: <span id="current-sound">ピアノ</span> | 
+            音階モード: <span id="mode-display">アルファベット順</span>
+        </div>
+        <div class="keyboard-container">
+            <div id="keyboard-visual"></div>
+        </div>
+        <div class="volume-control">
+            <label for="volume">音量: </label>
+            <input type="range" id="volume" min="0" max="100" value="50">
+            <span id="volume-display">50</span>
+        </div>
+    </div>
+    <script src="./script.js"></script>
+</body>
+</html>

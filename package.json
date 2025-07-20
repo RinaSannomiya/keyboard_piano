@@ -6,7 +6,7 @@
   "scripts": {
     "start": "python3 -m http.server 8000",
     "dev": "python3 -m http.server 8000",
-    "build": "echo 'No build process required for static site'"
+    "build": "mkdir -p public && cp index.html style.css script.js public/"
   },
   "keywords": ["piano", "keyboard", "music", "web-audio"],
   "author": "",
