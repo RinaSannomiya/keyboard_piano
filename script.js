@@ -2,6 +2,7 @@
 let audioContext;
 let currentSoundType = 0;
 const activeKeys = new Set();
+let isAlphabeticalMode = true; // true: アルファベット順, false: ピアノ配列
 
 // 音色定義
 const soundTypes = [
@@ -16,8 +17,8 @@ const soundTypes = [
     { name: 'アルファベット音声', type: 'voice', decay: 0.0 }
 ];
 
-// キーと音程のマッピング（A-Zをドレミファソラシドの繰り返し）
-const keyToNote = {
+// アルファベット順の音階配置（A-Zをドレミファソラシドの繰り返し）
+const alphabeticalKeyMap = {
     'A': 261.63, // C4 (ド)
     'B': 293.66, // D4 (レ)
     'C': 329.63, // E4 (ミ)
@@ -45,6 +46,50 @@ const keyToNote = {
     'Y': 2793.83, // F7 (ファ)
     'Z': 3135.96  // G7 (ソ)
 };
+
+// ピアノ配列の音階配置（実際のピアノに近い配置）
+const pianoKeyMap = {
+    // 下段（Z行）- 低音部
+    'Z': 130.81, // C3
+    'X': 146.83, // D3
+    'C': 164.81, // E3
+    'V': 174.61, // F3
+    'B': 196.00, // G3
+    'N': 220.00, // A3
+    'M': 246.94, // B3
+    ',': 261.63, // C4
+    '.': 293.66, // D4
+    '/': 329.63, // E4
+    
+    // 中段（A行）- 中音部
+    'A': 261.63, // C4
+    'S': 293.66, // D4
+    'D': 329.63, // E4
+    'F': 349.23, // F4
+    'G': 392.00, // G4
+    'H': 440.00, // A4
+    'J': 493.88, // B4
+    'K': 523.25, // C5
+    'L': 587.33, // D5
+    ';': 659.25, // E5
+    
+    // 上段（Q行）- 高音部
+    'Q': 523.25, // C5
+    'W': 587.33, // D5
+    'E': 659.25, // E5
+    'R': 698.46, // F5
+    'T': 783.99, // G5
+    'Y': 880.00, // A5
+    'U': 987.77, // B5
+    'I': 1046.50, // C6
+    'O': 1174.66, // D6
+    'P': 1318.51  // E6
+};
+
+// 現在のキーマッピングを取得
+function getCurrentKeyMap() {
+    return isAlphabeticalMode ? alphabeticalKeyMap : pianoKeyMap;
+}
 
 // 打楽器音の定義
 const drumSounds = {
@@ -250,6 +295,14 @@ document.addEventListener('keydown', (e) => {
         return;
     }
     
+    // 0キーで音階モード切り替え
+    if (key === '0') {
+        isAlphabeticalMode = !isAlphabeticalMode;
+        const modeName = isAlphabeticalMode ? 'アルファベット順' : 'ピアノ配列';
+        document.getElementById('mode-display').textContent = modeName;
+        return;
+    }
+    
     // ビジュアルフィードバック（スペースキーの場合は元のキーを使用）
     const visualKey = originalKey === ' ' ? ' ' : key;
     const keyElement = document.getElementById(`key-${visualKey}`);
@@ -258,8 +311,9 @@ document.addEventListener('keydown', (e) => {
     }
     
     // 音を再生
-    if (keyToNote[key]) {
-        playNote(keyToNote[key], currentSoundType, false, key);
+    const currentKeyMap = getCurrentKeyMap();
+    if (currentKeyMap[key]) {
+        playNote(currentKeyMap[key], currentSoundType, false, key);
     } else if (drumSounds[originalKey]) {
         const drum = drumSounds[originalKey];
         playNote(drum.freq, drum.type, true);
