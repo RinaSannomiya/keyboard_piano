@@ -84,15 +84,22 @@ h1 {
 }
 
 #keyboard-visual {
-    display: grid;
-    grid-template-columns: repeat(10, 1fr);
+    display: flex;
+    flex-direction: column;
     gap: 10px;
-    max-width: 800px;
+    max-width: 900px;
     margin: 0 auto;
 }
 
+.keyboard-row {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
 .key {
-    aspect-ratio: 1;
+    width: 50px;
+    height: 50px;
     background-color: #2d3436;
     border: 2px solid #4ecdc4;
     border-radius: 8px;
@@ -105,6 +112,10 @@ h1 {
     transition: all 0.1s ease;
     position: relative;
     overflow: hidden;
+}
+
+.space-key {
+    width: 300px;
 }
 
 .key:hover {
@@ -150,11 +161,17 @@ h1 {
         font-size: 2rem;
     }
     
-    #keyboard-visual {
-        grid-template-columns: repeat(7, 1fr);
+    .key {
+        width: 30px;
+        height: 30px;
+        font-size: 0.8rem;
     }
     
-    .key {
-        font-size: 1rem;
+    .space-key {
+        width: 200px;
+    }
+    
+    .keyboard-row {
+        gap: 5px;
     }
 }

@@ -190,19 +190,44 @@ function playDrumSound(frequency, type, volume) {
 // キーボードビジュアル作成
 function createKeyboardVisual() {
     const container = document.getElementById('keyboard-visual');
-    const allKeys = Object.keys(keyToNote).concat(Object.keys(drumSounds)).concat(['1','2','3','4','5','6','7','8','9']);
     
-    allKeys.forEach(key => {
-        const keyDiv = document.createElement('div');
-        keyDiv.className = 'key';
-        keyDiv.id = `key-${key}`;
-        keyDiv.textContent = key === ' ' ? 'SPACE' : key;
+    // キーボード配列（QWERTY配列）
+    const keyboardLayout = [
+        ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'],
+        ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
+        ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', ';'],
+        ['Z', 'X', 'C', 'V', 'B', 'N', 'M', ',', '.', '/'],
+        [' ']  // スペースキー
+    ];
+    
+    keyboardLayout.forEach((row, rowIndex) => {
+        const rowDiv = document.createElement('div');
+        rowDiv.className = 'keyboard-row';
         
-        if (drumSounds[key]) {
-            keyDiv.classList.add('drum');
-        }
+        // 行ごとのオフセットを設定
+        if (rowIndex === 2) rowDiv.style.marginLeft = '20px';  // A行
+        if (rowIndex === 3) rowDiv.style.marginLeft = '40px';  // Z行
         
-        container.appendChild(keyDiv);
+        row.forEach(key => {
+            const keyDiv = document.createElement('div');
+            keyDiv.className = 'key';
+            keyDiv.id = `key-${key}`;
+            
+            if (key === ' ') {
+                keyDiv.textContent = 'SPACE';
+                keyDiv.classList.add('space-key');
+            } else {
+                keyDiv.textContent = key;
+            }
+            
+            if (drumSounds[key]) {
+                keyDiv.classList.add('drum');
+            }
+            
+            rowDiv.appendChild(keyDiv);
+        });
+        
+        container.appendChild(rowDiv);
     });
 }
 
