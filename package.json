@@ -1,0 +1,13 @@
+{
+  "name": "keyboard-piano",
+  "version": "1.0.0",
+  "description": "ブラウザで動くキーボードピアノアプリ",
+  "main": "index.html",
+  "scripts": {
+    "start": "python3 -m http.server 8000",
+    "build": "echo 'No build process required for static site'"
+  },
+  "keywords": ["piano", "keyboard", "music", "web-audio"],
+  "author": "",
+  "license": "ISC"
+}

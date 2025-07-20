@@ -1,0 +1,147 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    background-color: #1a1a2e;
+    color: #eee;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container {
+    text-align: center;
+    padding: 20px;
+    max-width: 900px;
+    width: 100%;
+}
+
+h1 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    color: #ff6b6b;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+.instructions {
+    background-color: rgba(255,255,255,0.1);
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+}
+
+.instructions p {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+}
+
+.instructions ul {
+    list-style: none;
+    font-size: 1rem;
+}
+
+.instructions li {
+    margin: 5px 0;
+}
+
+.sound-mode {
+    font-size: 1.3rem;
+    margin-bottom: 30px;
+    padding: 15px;
+    background-color: rgba(255,107,107,0.2);
+    border-radius: 10px;
+    display: inline-block;
+}
+
+#current-sound {
+    font-weight: bold;
+    color: #4ecdc4;
+}
+
+.keyboard-container {
+    background-color: rgba(255,255,255,0.05);
+    padding: 30px;
+    border-radius: 15px;
+    margin-bottom: 30px;
+}
+
+#keyboard-visual {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 10px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.key {
+    aspect-ratio: 1;
+    background-color: #2d3436;
+    border: 2px solid #4ecdc4;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.1s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.key:hover {
+    background-color: #3d4547;
+    transform: translateY(-2px);
+}
+
+.key.active {
+    background-color: #4ecdc4;
+    color: #1a1a2e;
+    transform: scale(0.95);
+    box-shadow: 0 0 20px rgba(78, 205, 196, 0.6);
+}
+
+.key.drum {
+    border-color: #ff6b6b;
+}
+
+.key.drum.active {
+    background-color: #ff6b6b;
+}
+
+.volume-control {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-size: 1.1rem;
+}
+
+#volume {
+    width: 200px;
+    cursor: pointer;
+}
+
+#volume-display {
+    font-weight: bold;
+    color: #4ecdc4;
+}
+
+@media (max-width: 600px) {
+    h1 {
+        font-size: 2rem;
+    }
+    
+    #keyboard-visual {
+        grid-template-columns: repeat(7, 1fr);
+    }
+    
+    .key {
+        font-size: 1rem;
+    }
+}
