@@ -3,6 +3,8 @@ let audioContext;
 let currentSoundType = 0;
 const activeKeys = new Set();
 let isAlphabeticalMode = true; // true: アルファベット順, false: ピアノ配列
+let isABCMode = false; // ABCモード（アルファベット学習）
+let abcProgress = 0; // ABCモードの進行状況（0=A, 1=B, ... 25=Z）
 
 // 音色定義
 const soundTypes = [
@@ -248,7 +250,6 @@ function createKeyboardVisual() {
     
     // キーボード配列（QWERTY配列）
     const keyboardLayout = [
-        ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'],
         ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
         ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', ';'],
         ['Z', 'X', 'C', 'V', 'B', 'N', 'M', ',', '.', '/'],
@@ -260,8 +261,8 @@ function createKeyboardVisual() {
         rowDiv.className = 'keyboard-row';
         
         // 行ごとのオフセットを設定
-        if (rowIndex === 2) rowDiv.style.marginLeft = '20px';  // A行
-        if (rowIndex === 3) rowDiv.style.marginLeft = '40px';  // Z行
+        if (rowIndex === 1) rowDiv.style.marginLeft = '20px';  // A行
+        if (rowIndex === 2) rowDiv.style.marginLeft = '40px';  // Z行
         
         row.forEach(key => {
             const keyDiv = document.createElement('div');
@@ -326,7 +327,37 @@ document.addEventListener('keydown', (e) => {
         keyElement.classList.add('active');
     }
     
-    // 音を再生
+    // ABCモードの処理
+    if (isABCMode) {
+        const expectedKey = String.fromCharCode(65 + abcProgress);
+        if (key === expectedKey) {
+            // 正しいキーが押された
+            playNote(alphabeticalKeyMap[key], currentSoundType, false, key);
+            abcProgress++;
+            
+            if (abcProgress >= 26) {
+                // 全て完了
+                showSuccessAnimation();
+            } else {
+                updateABCDisplay();
+            }
+        } else {
+            // 間違ったキーが押された - エラー音を鳴らす
+            const errorOsc = audioContext.createOscillator();
+            const errorGain = audioContext.createGain();
+            errorOsc.frequency.setValueAtTime(100, audioContext.currentTime);
+            errorOsc.type = 'sawtooth';
+            errorGain.gain.setValueAtTime(0.1, audioContext.currentTime);
+            errorGain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+            errorOsc.connect(errorGain);
+            errorGain.connect(audioContext.destination);
+            errorOsc.start();
+            errorOsc.stop(audioContext.currentTime + 0.1);
+        }
+        return;
+    }
+    
+    // 通常モードの音を再生
     const currentKeyMap = getCurrentKeyMap();
     if (currentKeyMap[key]) {
         playNote(currentKeyMap[key], currentSoundType, false, key);
@@ -352,6 +383,80 @@ document.addEventListener('keyup', (e) => {
 // 音量コントロール
 document.getElementById('volume').addEventListener('input', (e) => {
     document.getElementById('volume-display').textContent = e.target.value;
+});
+
+// ABCモード関数
+function updateABCDisplay() {
+    if (!isABCMode) return;
+    
+    const nextLetter = String.fromCharCode(65 + abcProgress); // A=65
+    document.getElementById('next-key').textContent = nextLetter;
+    
+    // 進行状況バーの更新
+    const progressPercent = (abcProgress / 26) * 100;
+    document.getElementById('progress-fill').style.width = `${progressPercent}%`;
+    
+    // 次のキーをハイライト
+    document.querySelectorAll('.key').forEach(key => {
+        key.classList.remove('next-key');
+    });
+    
+    const nextKeyElement = document.getElementById(`key-${nextLetter}`);
+    if (nextKeyElement) {
+        nextKeyElement.classList.add('next-key');
+    }
+}
+
+function startABCMode() {
+    isABCMode = true;
+    abcProgress = 0;
+    isAlphabeticalMode = true; // ABCモードはアルファベット順を使用
+    
+    document.getElementById('abc-progress').style.display = 'block';
+    document.getElementById('mode-display').textContent = 'ABCモード';
+    updateABCDisplay();
+}
+
+function endABCMode() {
+    isABCMode = false;
+    document.getElementById('abc-progress').style.display = 'none';
+    document.querySelectorAll('.key').forEach(key => {
+        key.classList.remove('next-key');
+    });
+}
+
+function showSuccessAnimation() {
+    const successDiv = document.getElementById('success-animation');
+    successDiv.style.display = 'block';
+    
+    // 音声で「やったー！」を再生
+    const utterance = new SpeechSynthesisUtterance('やったー！');
+    utterance.lang = 'ja-JP';
+    utterance.rate = 1.0;
+    utterance.pitch = 1.2;
+    utterance.volume = 0.8;
+    speechSynthesis.speak(utterance);
+    
+    // 3秒後にアニメーションを非表示
+    setTimeout(() => {
+        successDiv.style.display = 'none';
+        abcProgress = 0;
+        updateABCDisplay();
+    }, 3000);
+}
+
+// モードボタンのイベントリスナー
+document.getElementById('mode-piano').addEventListener('click', () => {
+    endABCMode();
+    document.getElementById('mode-piano').classList.add('active');
+    document.getElementById('mode-abc').classList.remove('active');
+    document.getElementById('mode-display').textContent = isAlphabeticalMode ? 'アルファベット順' : 'ピアノ配列';
+});
+
+document.getElementById('mode-abc').addEventListener('click', () => {
+    startABCMode();
+    document.getElementById('mode-abc').classList.add('active');
+    document.getElementById('mode-piano').classList.remove('active');
 });
 
 // 初期化

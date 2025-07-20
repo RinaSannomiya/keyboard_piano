@@ -31,6 +31,20 @@
             <input type="range" id="volume" min="0" max="100" value="50">
             <span id="volume-display">50</span>
         </div>
+        <div class="mode-buttons">
+            <button id="mode-piano" class="mode-btn active">ピアノモード</button>
+            <button id="mode-abc" class="mode-btn">ABCモード</button>
+        </div>
+        <div id="abc-progress" class="abc-progress" style="display: none;">
+            <div class="progress-text">次のキー: <span id="next-key">A</span></div>
+            <div class="progress-bar">
+                <div id="progress-fill" class="progress-fill"></div>
+            </div>
+        </div>
+        <div id="success-animation" class="success-animation" style="display: none;">
+            <div class="cute-character">🎉</div>
+            <div class="success-text">やったー！</div>
+        </div>
     </div>
     <script src="./script.js"></script>
 </body>
