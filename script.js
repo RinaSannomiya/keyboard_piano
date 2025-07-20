@@ -13,37 +13,37 @@ const soundTypes = [
     { name: 'フルート', type: 'sine', decay: 0.7 },
     { name: 'ストリングス', type: 'sawtooth', decay: 1.2 },
     { name: 'ブラス', type: 'sawtooth', decay: 0.4 },
-    { name: 'エレピ', type: 'triangle', decay: 0.6 }
+    { name: 'アルファベット音声', type: 'voice', decay: 0.0 }
 ];
 
-// キーと音程のマッピング（C4を基準）
+// キーと音程のマッピング（A-Zをアルファベット順に）
 const keyToNote = {
     'A': 261.63, // C4
-    'W': 277.18, // C#4
-    'S': 293.66, // D4
-    'E': 311.13, // D#4
-    'D': 329.63, // E4
+    'B': 277.18, // C#4
+    'C': 293.66, // D4
+    'D': 311.13, // D#4
+    'E': 329.63, // E4
     'F': 349.23, // F4
-    'T': 369.99, // F#4
-    'G': 392.00, // G4
-    'Y': 415.30, // G#4
-    'H': 440.00, // A4
-    'U': 466.16, // A#4
-    'J': 493.88, // B4
-    'K': 523.25, // C5
-    'O': 554.37, // C#5
-    'L': 587.33, // D5
+    'G': 369.99, // F#4
+    'H': 392.00, // G4
+    'I': 415.30, // G#4
+    'J': 440.00, // A4
+    'K': 466.16, // A#4
+    'L': 493.88, // B4
+    'M': 523.25, // C5
+    'N': 554.37, // C#5
+    'O': 587.33, // D5
     'P': 622.25, // D#5
-    'Z': 659.25, // E5
-    'X': 698.46, // F5
-    'C': 739.99, // F#5
-    'V': 783.99, // G5
-    'B': 830.61, // G#5
-    'N': 880.00, // A5
-    'M': 932.33, // A#5
-    'Q': 987.77, // B5
-    'R': 1046.50, // C6
-    'I': 1108.73  // C#6
+    'Q': 659.25, // E5
+    'R': 698.46, // F5
+    'S': 739.99, // F#5
+    'T': 783.99, // G5
+    'U': 830.61, // G#5
+    'V': 880.00, // A5
+    'W': 932.33, // A#5
+    'X': 987.77, // B5
+    'Y': 1046.50, // C6
+    'Z': 1108.73  // C#6
 };
 
 // 打楽器音の定義
@@ -68,17 +68,33 @@ function initAudioContext() {
 }
 
 // 音を再生する関数
-function playNote(frequency, soundType, isDrum = false) {
+function playNote(frequency, soundType, isDrum = false, keyPressed = null) {
     initAudioContext();
     
     const now = audioContext.currentTime;
     const volume = document.getElementById('volume').value / 100;
+    
+    // アルファベット音声モードの場合
+    if (soundType === 8 && keyPressed && !isDrum) {
+        speakLetter(keyPressed);
+        return;
+    }
     
     if (isDrum) {
         playDrumSound(frequency, soundType, volume);
     } else {
         playToneSound(frequency, soundType, volume);
     }
+}
+
+// アルファベットを読み上げる関数
+function speakLetter(letter) {
+    const utterance = new SpeechSynthesisUtterance(letter);
+    utterance.lang = 'en-US';
+    utterance.rate = 1.0;
+    utterance.pitch = 1.0;
+    utterance.volume = document.getElementById('volume').value / 100;
+    speechSynthesis.speak(utterance);
 }
 
 // 楽器音を再生
@@ -218,7 +234,7 @@ document.addEventListener('keydown', (e) => {
     
     // 音を再生
     if (keyToNote[key]) {
-        playNote(keyToNote[key], currentSoundType);
+        playNote(keyToNote[key], currentSoundType, false, key);
     } else if (drumSounds[originalKey]) {
         const drum = drumSounds[originalKey];
         playNote(drum.freq, drum.type, true);
