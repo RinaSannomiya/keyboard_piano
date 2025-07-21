@@ -288,13 +288,70 @@ h1 {
 }
 
 .cute-character {
-    font-size: 100px;
+    margin-bottom: 20px;
+}
+
+.barbapapa {
+    width: 150px;
+    height: 180px;
+    position: relative;
+    margin: 0 auto;
     animation: bounce 1s infinite;
 }
 
+.barbapapa-body {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #ffb3d9 0%, #ff69b4 100%);
+    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    position: absolute;
+    box-shadow: 0 10px 30px rgba(255, 105, 180, 0.3);
+}
+
+.barbapapa-face {
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80%;
+}
+
+.eye {
+    width: 20px;
+    height: 25px;
+    background-color: #1a1a2e;
+    border-radius: 50%;
+    position: absolute;
+    top: 0;
+}
+
+.eye.left {
+    left: 20%;
+}
+
+.eye.right {
+    right: 20%;
+}
+
+.mouth {
+    width: 50px;
+    height: 25px;
+    border: 3px solid #1a1a2e;
+    border-radius: 0 0 50px 50px;
+    border-top: none;
+    position: absolute;
+    top: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
 @keyframes bounce {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-20px); }
+    0%, 100% { 
+        transform: translateY(0) scale(1);
+    }
+    50% { 
+        transform: translateY(-20px) scale(1.05);
+    }
 }
 
 .success-text {

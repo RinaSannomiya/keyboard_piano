@@ -432,15 +432,23 @@ function showSuccessAnimation() {
     // 音声で「やったー！」を再生（女性の声）
     const utterance = new SpeechSynthesisUtterance('やったー！');
     utterance.lang = 'ja-JP';
-    utterance.rate = 1.0;
-    utterance.pitch = 1.5; // 高めのピッチで女性らしく
+    utterance.rate = 0.9; // 少しゆっくり
+    utterance.pitch = 1.8; // より高めのピッチで女性らしく
     utterance.volume = 0.8;
     
     // 利用可能な音声から女性の声を選択
     const voices = speechSynthesis.getVoices();
-    const femaleVoice = voices.find(voice => 
-        voice.lang.includes('ja') && (voice.name.includes('Female') || voice.name.includes('女性'))
-    );
+    const japaneseVoices = voices.filter(voice => voice.lang.includes('ja'));
+    
+    // 女性の声を優先的に選択（名前に「Female」「女性」「Kyoko」「Otoya」などが含まれる）
+    const femaleVoice = japaneseVoices.find(voice => 
+        voice.name.includes('Female') || 
+        voice.name.includes('女性') ||
+        voice.name.includes('Kyoko') ||
+        voice.name.includes('Otoya') ||
+        voice.name.includes('Google 日本語 2') // Google Chromeの女性音声
+    ) || japaneseVoices[japaneseVoices.length - 1]; // 見つからない場合は最後の日本語音声
+    
     if (femaleVoice) {
         utterance.voice = femaleVoice;
     }
