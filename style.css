@@ -253,14 +253,25 @@ h1 {
 
 .key.next-key {
     animation: pulse-highlight 1s infinite;
+    background-color: #ffffff !important;
+    color: #1a1a2e !important;
     border-color: #ff6b6b;
-    box-shadow: 0 0 20px rgba(255, 107, 107, 0.6);
+    box-shadow: 0 0 30px rgba(255, 255, 255, 0.8);
 }
 
 @keyframes pulse-highlight {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-    100% { transform: scale(1); }
+    0% { 
+        transform: scale(1);
+        background-color: #ffffff;
+    }
+    50% { 
+        transform: scale(1.05);
+        background-color: #f0f0f0;
+    }
+    100% { 
+        transform: scale(1);
+        background-color: #ffffff;
+    }
 }
 
 .success-animation {

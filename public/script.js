@@ -429,12 +429,22 @@ function showSuccessAnimation() {
     const successDiv = document.getElementById('success-animation');
     successDiv.style.display = 'block';
     
-    // 音声で「やったー！」を再生
+    // 音声で「やったー！」を再生（女性の声）
     const utterance = new SpeechSynthesisUtterance('やったー！');
     utterance.lang = 'ja-JP';
     utterance.rate = 1.0;
-    utterance.pitch = 1.2;
+    utterance.pitch = 1.5; // 高めのピッチで女性らしく
     utterance.volume = 0.8;
+    
+    // 利用可能な音声から女性の声を選択
+    const voices = speechSynthesis.getVoices();
+    const femaleVoice = voices.find(voice => 
+        voice.lang.includes('ja') && (voice.name.includes('Female') || voice.name.includes('女性'))
+    );
+    if (femaleVoice) {
+        utterance.voice = femaleVoice;
+    }
+    
     speechSynthesis.speak(utterance);
     
     // 3秒後にアニメーションを非表示
@@ -471,4 +481,9 @@ document.addEventListener('click', () => {
 window.addEventListener('load', () => {
     console.log('キーボードピアノ: 読み込み完了');
     console.log('キーを押して演奏してください');
+    
+    // 音声合成の初期化（女性の声を事前にロード）
+    if ('speechSynthesis' in window) {
+        speechSynthesis.getVoices();
+    }
 });
